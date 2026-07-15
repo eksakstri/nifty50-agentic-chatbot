@@ -1,79 +1,136 @@
 import time
-import streamlit as st
+import gradio as gr
+
 from main import Nifty50Chatbot
 
-st.set_page_config(
-    page_title="NIFTY50 Assistant",
-    page_icon="📈",
-    layout="wide"
-)
+
+print("Loading chatbot...")
+bot = Nifty50Chatbot()
+print("Chatbot loaded.")
 
 
-@st.cache_resource
-def load_bot():
-    return Nifty50Chatbot()
+def ask_question(query):
 
-
-bot = load_bot()
-
-
-st.title("📈 NIFTY50 Financial Assistant")
-
-st.caption(
-    "Corporate announcements • Market Snapshot • Option Chain • General Finance"
-)
-
-query = st.text_input(
-    "Ask a question",
-    placeholder="Why did HDFC Bank move today?"
-)
-
-
-if st.button("Ask"):
-
-    if query.strip():
-
-        start = time.time()
-
-        with st.spinner("Thinking..."):
-
-            result = bot.graph.invoke({
-
-                "query": query,
-
-                "route": None,
-
-                "router_confidence": 0,
-
-                "retrieval_source": None,
-
-                "retrieved_context": None,
-
-                "retrieval_confidence": 0,
-
-                "answer": None
-
-            })
-
-        end = time.time()
-
-        st.markdown("## Answer")
-
-        st.write(result["answer"])
-
-        col1, col2, col3 = st.columns(3)
-
-        col1.metric(
-            "Route",
-            result["retrieval_source"]
+    if not query.strip():
+        return (
+            "Please enter a question.",
+            "",
+            "",
+            ""
         )
 
-        col2.metric(
-            "Confidence",
-            f"{result['retrieval_confidence']:.2f}"
+    start = time.time()
+
+    result = bot.graph.invoke({
+
+        "query": query,
+
+        "route": None,
+
+        "router_confidence": 0,
+
+        "retrieval_source": None,
+
+        "retrieved_context": None,
+
+        "retrieval_confidence": 0,
+
+        "answer": None
+
+    })
+
+    elapsed = time.time() - start
+
+    answer = result["answer"]
+
+    route = result["retrieval_source"]
+
+    confidence = f"{result['retrieval_confidence']:.2f}"
+
+    runtime = f"{elapsed:.2f} sec"
+
+    return (
+        answer,
+        route,
+        confidence,
+        runtime
+    )
+
+
+with gr.Blocks(
+    title="NIFTY50 Financial Assistant"
+) as demo:
+
+    gr.Markdown(
+        """
+# 📈 NIFTY50 Financial Assistant
+
+Corporate announcements • Market Snapshot • Option Chain • General Finance
+"""
+    )
+
+    query = gr.Textbox(
+        label="Ask a Question",
+        placeholder="Why did HDFC Bank move today?"
+    )
+
+    ask_btn = gr.Button(
+        "Ask",
+        variant="primary"
+    )
+
+    gr.Markdown("## Answer")
+
+    answer = gr.Markdown()
+
+    with gr.Row():
+
+        route = gr.Textbox(
+            label="Route",
+            interactive=False
         )
 
-        col3.metric(
-            "Time",
-            f"{end-start:.2f}s"
+        confidence = gr.Textbox(
+            label="Confidence",
+            interactive=False
         )
+
+        runtime = gr.Textbox(
+            label="Response Time",
+            interactive=False
+        )
+
+    ask_btn.click(
+
+        fn=ask_question,
+
+        inputs=query,
+
+        outputs=[
+            answer,
+            route,
+            confidence,
+            runtime
+        ]
+
+    )
+
+    query.submit(
+
+        fn=ask_question,
+
+        inputs=query,
+
+        outputs=[
+            answer,
+            route,
+            confidence,
+            runtime
+        ]
+
+    )
+
+
+if __name__ == "__main__":
+
+    demo.launch()

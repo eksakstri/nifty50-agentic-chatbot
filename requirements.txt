@@ -16,7 +16,7 @@ langchain-groq
 groq
 tqdm
 flask
-streamlit
+gradio
 
 requests>=2.31
 pymongo>=4.6
