@@ -1,62 +1,67 @@
-# 📈 Nifty50 Agentic Chatbot
+# 📈 NIFTY50 Agentic Chatbot
 
-An **Agentic Retrieval-Augmented Generation (RAG)** chatbot for the Indian stock market that answers questions about **NIFTY 50 companies**, **live market performance**, **option chain data**, and **corporate announcements** using **LangGraph**, **FAISS**, and **Groq LLMs**.
+An **Agentic Retrieval-Augmented Generation (RAG)** chatbot for the Indian stock market that intelligently answers questions about **NIFTY 50 companies**, **market performance**, **option chain data**, and **corporate announcements**.
 
-Unlike traditional RAG systems that search a single knowledge base, this chatbot intelligently routes user queries to the most appropriate information source before generating an answer.
+Unlike a traditional RAG chatbot, this project uses **LangGraph** to dynamically route each query to the appropriate data source before generating a grounded response.
 
 ---
 
 ## ✨ Features
 
-* 📊 Live NIFTY 50 market snapshot analysis
-* 📈 Option Chain analysis
-* 📄 Corporate announcement understanding using semantic search
 * 🤖 Agentic routing using LangGraph
-* 🔍 FAISS-powered document retrieval
-* ⚡ Groq LLM for fast inference
+* 📊 Live NIFTY 50 market analysis
+* 📈 Option Chain interpretation
+* 📄 Corporate announcement retrieval using FAISS
+* 🔍 Semantic search over company filings
+* ⚡ Groq LLM powered response generation
 * 🧠 Multi-tool decision making
-* 📚 Source-aware responses with confidence gating
-* ☁️ Automatically downloads the latest retrieval assets from Hugging Face
+* 📚 Confidence-gated grounded answers
+* ☁️ Automatic retrieval asset download from Hugging Face Dataset
+* 🌐 Interactive Gradio web interface
 
 ---
 
-## 🏗 Architecture
+# 🏗 System Architecture
 
 ```text
-                          User Query
-                               │
-                               ▼
-                       LangGraph Router
-                               │
-      ┌───────────────┬───────────────┬───────────────┐
-      │               │               │               │
-      ▼               ▼               ▼               ▼
- Market Data     Option Chain      PDF Search     General LLM
- Retriever        Retriever       (FAISS RAG)      Response
-      │               │               │
-      └───────────────┴───────────────┘
-                      │
-                      ▼
-              Answer Generator (Groq)
-                      │
-                      ▼
-                Final User Response
+                              User Query
+                                   │
+                                   ▼
+                           Gradio Interface
+                                   │
+                                   ▼
+                           LangGraph Router
+                                   │
+      ┌───────────────────┬───────────────┬───────────────────┐
+      │                   │               │                   │
+      ▼                   ▼               ▼                   ▼
+ Market Retriever   Option Chain     PDF Retriever      General LLM
+                    Retriever        (FAISS Search)
+      │                   │               │
+      └───────────────────┴───────────────┘
+                      Retrieved Context
+                              │
+                              ▼
+                     Answer Generator (Groq)
+                              │
+                              ▼
+                       Final User Response
 ```
 
 ---
 
-## 📂 Project Structure
+# 🗂 Project Structure
 
 ```text
 nifty50-agentic-chatbot/
 
 │
-├── app.py
-├── main.py
-├── graph.py
-├── state.py
-├── config.py
-├── download_assets.py
+├── app.py                     # Gradio interface
+├── main.py                    # Chatbot initialization
+├── graph.py                   # LangGraph workflow
+├── state.py                   # Shared graph state
+├── config.py                  # Configuration & environment variables
+├── download_assets.py         # Downloads retrieval assets
 │
 ├── agent/
 │   ├── router.py
@@ -77,91 +82,113 @@ nifty50-agentic-chatbot/
 
 ---
 
-## 🧠 How It Works
+# 🧠 Workflow
 
-The chatbot first classifies every user query into one of four categories:
+Every user question first passes through a routing agent.
 
-### 1. Market Data
+The router classifies the query into one of four categories.
 
-Uses the latest NIFTY 50 market snapshot to answer questions such as:
+## 📊 Market Data
+
+Uses the latest NIFTY50 market snapshot.
+
+Typical questions:
 
 * Top gainers today
-* Biggest losers
-* Company performance
-* Price movement
-* Trading volume
-* Daily market summary
+* Biggest losers today
+* How did HDFC Bank perform today?
+* Highest traded volume
+* Daily market performance
+* Company price movement
 
 ---
 
-### 2. Option Chain
+## 📈 Option Chain
 
-Uses the latest Option Chain CSV to answer questions about:
+Uses the latest downloaded Option Chain CSV.
 
-* Open Interest
-* Change in OI
-* Max Pain
+Typical questions:
+
+* Maximum Call Open Interest
+* Maximum Put Open Interest
 * PCR
-* ITM/OTM contracts
+* Support & Resistance
 * Strike analysis
-* Support and resistance
+* Option chain sentiment
 
 ---
 
-### 3. Corporate Announcements
+## 📄 Corporate Announcements
 
-Uses Retrieval-Augmented Generation over downloaded company announcements.
+Uses semantic search over downloaded corporate announcement PDFs.
 
-Pipeline:
+Pipeline
 
 ```text
-Query
-    ↓
+User Query
+      │
+      ▼
 FAISS Similarity Search
-    ↓
-Top Relevant Chunks
-    ↓
+      │
+      ▼
+Relevant Chunks
+      │
+      ▼
 Groq LLM
-    ↓
+      │
+      ▼
 Grounded Response
 ```
 
----
+Typical questions:
 
-### 4. General Queries
-
-Questions outside the supported financial domain are answered directly by the LLM.
-
-The chatbot clearly indicates when a response is based on general knowledge rather than retrieved company data.
+* Summarize Reliance's latest announcement.
+* Has Infosys released any filings recently?
+* Explain today's HDFC Bank announcement.
 
 ---
 
-## 📦 Data Source
+## 💬 General Finance
 
-This project does **not** store embeddings or market files inside the repository.
+If the question is outside the supported retrieval sources, the chatbot responds using the LLM's general knowledge while clearly indicating that the answer is not based on retrieved company data.
 
-At startup it downloads the latest retrieval assets from the companion Hugging Face Dataset.
+---
+
+# 📦 Data Source
+
+This repository intentionally **does not contain**:
+
+* PDF documents
+* FAISS index
+* Embeddings
+* Metadata
+* Market snapshot
+* Option chain CSV
+
+Instead, the application automatically downloads the latest retrieval assets from the companion Hugging Face Dataset during startup.
 
 Dataset:
 
-`eksakstri/nifty50-rag-data`
+**eksakstri/nifty50-rag-data**
 
-The dataset contains:
+Downloaded assets include:
 
-* `corpus.faiss`
-* `chunk_metadata.json`
-* `company_summaries.md`
-* `nifty50_snapshot.json`
-* `option_chain.csv`
+* corpus.faiss
+* chunk_metadata.json
+* company_summaries.md
+* nifty50_snapshot.json
+* option_chain.csv
+
+This keeps the repository lightweight while ensuring the chatbot always uses the latest generated data.
 
 ---
 
-## 🚀 Installation
+# 🚀 Installation
 
 Clone the repository
 
 ```bash
-git clone https://github.com/<username>/nifty50-agentic-chatbot.git
+git clone https://github.com/<your_username>/nifty50-agentic-chatbot.git
 
 cd nifty50-agentic-chatbot
 ```
@@ -175,69 +202,148 @@ pip install -r requirements.txt
 Create a `.env` file
 
 ```env
-GROQ_API_KEY=your_api_key
+GROQ_API_KEY=your_groq_api_key
+
 HF_DATASET=eksakstri/nifty50-rag-data
 ```
 
-Run the chatbot
+Run the application
 
 ```bash
-streamlit run app.py
+python app.py
 ```
 
-The required retrieval assets are downloaded automatically on first launch.
+The retrieval assets will automatically be downloaded during the first startup.
 
 ---
 
-## 💬 Example Questions
+# 💬 Example Questions
 
-### Market
+## Market
 
 * Which stock gained the most today?
 * Show today's top losers.
-* How did HDFC Bank perform today?
-* Which stock traded the highest volume?
+* Which company had the highest trading volume?
+* How did Reliance perform today?
 
-### Option Chain
+---
+
+## Option Chain
 
 * Where is the maximum Call Open Interest?
-* What is the current market sentiment?
+* What is the market sentiment today?
 * Which strike has the highest Put OI?
 * Explain today's option chain.
 
-### Corporate Announcements
+---
+
+## Corporate Announcements
 
 * Summarize Reliance's latest announcement.
-* What has Infosys recently announced?
-* Has TCS released any new corporate filings?
-* Explain HDFC Bank's recent disclosure.
+* Explain Infosys' recent filing.
+* What has TCS announced recently?
+* Has HDFC Bank released any disclosures today?
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Technology Stack
 
 * Python
 * LangGraph
+* Gradio
 * FAISS
 * Sentence Transformers
 * Groq API
-* Streamlit
 * Hugging Face Hub
-* Pandas
 * NumPy
+* Pandas
 
 ---
 
-## 🔄 Related Projects
+# 🌐 Deployment
 
-### 📊 Nifty50 Data Pipeline
+The application is designed to be deployed on **Hugging Face Spaces**.
 
-A separate data engineering pipeline responsible for:
+Startup sequence:
 
-* Collecting live NSE market data
+```text
+Launch Application
+        │
+        ▼
+Download Retrieval Assets
+        │
+        ▼
+Load FAISS Index
+        │
+        ▼
+Load Metadata
+        │
+        ▼
+Initialize LangGraph
+        │
+        ▼
+Launch Gradio Interface
+```
+
+---
+
+# 🔄 Project Ecosystem
+
+```text
+                    ┌──────────────────────────────┐
+                    │ Nifty50 Data Pipeline        │
+                    │ (GitHub Repository)          │
+                    └──────────────┬───────────────┘
+                                   │
+                      Generates embeddings & market data
+                                   │
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │ Hugging Face Dataset         │
+                    │ nifty50-rag-data            │
+                    └──────────────┬───────────────┘
+                                   │
+                          download_assets.py
+                                   │
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │ Nifty50 Agentic Chatbot      │
+                    │ (GitHub + HF Spaces)         │
+                    └──────────────────────────────┘
+```
+
+---
+
+# 🚧 Future Improvements
+
+* Multi-turn conversation memory
+* Streaming responses
+* Source citations
+* Interactive stock charts
+* Hybrid keyword + vector retrieval
+* Query rewriting
+* Incremental FAISS updates
+* Portfolio analysis
+* Multi-agent financial reasoning
+
+---
+
+# 📸 Demo
+
+A live demo will be available through Hugging Face Spaces.
+
+---
+
+# 🔗 Related Projects
+
+### Nifty50 Data Pipeline
+
+Responsible for:
+
+* Downloading NSE market data
 * Downloading corporate announcement PDFs
-* Generating semantic embeddings
-* Building FAISS indices
+* Building semantic embeddings
+* Creating the FAISS index
 * Publishing retrieval assets to Hugging Face
 
 Repository:
@@ -246,18 +352,6 @@ Repository:
 
 ---
 
-## 🚧 Future Improvements
+# 📄 License
 
-* Conversation memory
-* Citation highlighting
-* Streaming responses
-* Hybrid keyword + vector retrieval
-* Query rewriting
-* Incremental FAISS updates
-* Multi-agent financial analysis
-
----
-
-## 📜 License
-
-MIT License
+This project is licensed under the MIT License.
