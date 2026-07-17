@@ -31,30 +31,28 @@ class OptionChainRetriever:
         )
         print(df.columns)
 
-        df.columns = [
-            "call_oi",
-            "call_change_oi",
-            "call_volume",
-            "call_iv",
-            "call_ltp",
-            "call_change",
-            "call_bid_qty",
-            "call_bid",
-            "call_ask",
-            "call_ask_qty",
-            "strike",
-            "put_bid_qty",
-            "put_bid",
-            "put_ask",
-            "put_ask_qty",
-            "put_change",
-            "put_ltp",
-            "put_iv",
-            "put_volume",
-            "put_change_oi",
-            "put_oi",
-            "unused"
-        ]
+        df = df.rename(columns={
+            "OI": "call_oi",
+            "CHNG IN OI": "call_change_oi",
+            "VOLUME": "call_volume",
+            "IV": "call_iv",
+            "LTP": "call_ltp",
+            "CHNG": "call_change",
+            "BID QTY": "call_bid_qty",
+            "BID": "call_bid",
+            "ASK": "call_ask",
+            "ASK QTY": "call_ask_qty",
+            "BID QTY.1": "put_bid_qty",
+            "BID.1": "put_bid",
+            "ASK.1": "put_ask",
+            "ASK QTY.1": "put_ask_qty",
+            "CHNG.1": "put_change",
+            "LTP.1": "put_ltp",
+            "IV.1": "put_iv",
+            "VOLUME.1": "put_volume",
+            "CHNG IN OI.1": "put_change_oi",
+            "OI.1": "put_oi",
+        })
 
         df = df.drop(
             columns=["unused"],
