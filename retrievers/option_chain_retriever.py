@@ -43,6 +43,7 @@ class OptionChainRetriever:
             "ASK": "call_ask",
             "ASK QTY": "call_ask_qty",
             "BID QTY.1": "put_bid_qty",
+            "STRIKE": "strike",
             "BID.1": "put_bid",
             "ASK.1": "put_ask",
             "ASK QTY.1": "put_ask_qty",
