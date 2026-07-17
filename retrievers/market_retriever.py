@@ -2,7 +2,6 @@ import json
 import re
 from pathlib import Path
 
-
 SNAPSHOT_PATH = Path(
     "../embeddings/nifty50_snapshot.json"
 )

@@ -1,8 +1,7 @@
 from state import AgentState
-from chatbot.retrievers.market_retriever import MarketRetriever
+from retrievers.market_retriever import MarketRetriever
 
 retriever = MarketRetriever()
-
 
 def market_node(state: AgentState):
 

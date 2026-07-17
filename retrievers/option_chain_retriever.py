@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 CSV_PATH = Path(
     "../embeddings/option_chain.csv"
 )

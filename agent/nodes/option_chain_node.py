@@ -1,5 +1,5 @@
 from state import AgentState
-from chatbot.retrievers.option_chain_retriever import OptionChainRetriever
+from retrievers.option_chain_retriever import OptionChainRetriever
 
 retriever = OptionChainRetriever()
 

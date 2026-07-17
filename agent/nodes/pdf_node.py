@@ -1,5 +1,5 @@
 from state import AgentState
-from chatbot.retrievers.pdf_retriever import PDFRetriever
+from retrievers.pdf_retriever import PDFRetriever
 
 retriever = PDFRetriever()
 

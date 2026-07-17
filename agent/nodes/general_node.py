@@ -1,6 +1,5 @@
 from state import AgentState
 
-
 def general_node(state: AgentState):
 
     state["retrieved_context"] = None
