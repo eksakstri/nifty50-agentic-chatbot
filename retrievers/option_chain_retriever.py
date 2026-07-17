@@ -21,6 +21,7 @@ class OptionChainRetriever:
             CSV_PATH,
             skiprows=1
         )
+        print(df.columns)
 
         df.columns = [
             "call_oi",
