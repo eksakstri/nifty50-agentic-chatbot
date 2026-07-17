@@ -1,7 +1,4 @@
 from graph import graph
-from download_assets import download_assets
-
-download_assets()
 
 class Nifty50Chatbot:
 
