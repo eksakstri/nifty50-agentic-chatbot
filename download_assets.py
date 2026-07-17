@@ -9,7 +9,7 @@ from huggingface_hub import hf_hub_download
 REPO_ID = "eksakstri/nifty50-rag-data"
 REPO_TYPE = "dataset"
 
-LOCAL_DIR = Path("data")
+LOCAL_DIR = Path("embeddings")
 LOCAL_DIR.mkdir(parents=True, exist_ok=True)
 
 

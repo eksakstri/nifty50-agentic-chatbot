@@ -8,10 +8,18 @@ class PDFRetriever:
 
     def __init__(
         self,
-        embedding_dir="../embeddings",
+        embedding_dir=None,
         model_name="all-mpnet-base-v2",
         top_k=5,
     ):
+        if embedding_dir is None:
+            embedding_dir = (
+                Path(__file__).resolve().parent.parent
+                / "embeddings"
+            )
+
+        self.embedding_dir = Path(embedding_dir)
+        self.top_k = top_k
 
         self.top_k = top_k
 

@@ -1,12 +1,11 @@
 import re
+import pandas as pd
 from pathlib import Path
 
-import pandas as pd
+ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT / "embeddings"
 
-CSV_PATH = Path(
-    "../embeddings/option_chain.csv"
-)
-
+CSV_PATH = DATA_DIR / "option_chain.csv"
 
 class OptionChainRetriever:
 

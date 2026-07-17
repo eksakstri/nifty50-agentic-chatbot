@@ -1,8 +1,9 @@
 import time
 import gradio as gr
+from download_assets import download_assets
+download_assets()
 
 from main import Nifty50Chatbot
-
 
 print("Loading chatbot...")
 bot = Nifty50Chatbot()

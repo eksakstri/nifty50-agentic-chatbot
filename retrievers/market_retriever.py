@@ -2,10 +2,10 @@ import json
 import re
 from pathlib import Path
 
-SNAPSHOT_PATH = Path(
-    "../embeddings/nifty50_snapshot.json"
-)
+ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT / "embeddings"
 
+SNAPSHOT_PATH = DATA_DIR / "nifty50_snapshot.json"
 
 class MarketRetriever:
 
