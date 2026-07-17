@@ -22,6 +22,14 @@ class OptionChainRetriever:
             header = 0 
         )
         print(df.columns)
+        print()
+        df = df.drop(
+            columns=[
+                "Unnamed: 1",
+                "Unnamed: 24"
+            ]
+        )
+        print(df.columns)
 
         df.columns = [
             "call_oi",
