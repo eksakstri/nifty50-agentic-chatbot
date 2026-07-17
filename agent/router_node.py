@@ -1,8 +1,7 @@
-from state import GraphState
+from state import AgentState
 from agent.router import router
 
-
-def router_node(state: GraphState):
+def router_node(state: AgentState):
 
     result = router.route(
         state["query"]
