@@ -1,15 +1,3 @@
----
-title: NIFTY50 Agentic Chatbot
-emoji: 📈
-colorFrom: blue
-colorTo: green
-sdk: gradio
-sdk_version: "5.38.2"
-python_version: "3.11"
-app_file: app.py
-pinned: false
----
-
 # 📈 NIFTY50 Agentic Chatbot
 
 An **Agentic Retrieval-Augmented Generation (RAG)** chatbot for the Indian stock market that intelligently answers questions about **NIFTY 50 companies**, **market performance**, **option chain data**, and **corporate announcements**.
