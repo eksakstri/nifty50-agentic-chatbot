@@ -19,7 +19,7 @@ class OptionChainRetriever:
 
         df = pd.read_csv(
             CSV_PATH,
-            skiprows=1
+            header = 0 
         )
         print(df.columns)
 
