@@ -12,11 +12,6 @@ print("[PDF RETRIEVER] Importing numpy...")
 import numpy as np
 print("[✓] numpy imported.")
 
-print("[PDF RETRIEVER] Importing SentenceTransformer...")
-from sentence_transformers import SentenceTransformer
-print("[✓] SentenceTransformer imported.")
-
-
 class PDFRetriever:
 
     def __init__(
@@ -80,8 +75,9 @@ class PDFRetriever:
                 "MB"
             )
 
-            self.embedder = SentenceTransformer(model_name)
-
+            self.model_name = model_name
+            self.embedder = None
+            
             print(
                 "RAM after model:",
                 process.memory_info().rss / 1024 / 1024,
@@ -113,7 +109,7 @@ class PDFRetriever:
 
         print("[PDFRetriever] Encoding query...")
 
-        embedding = self.embedder.encode(
+        embedding = self.get_embedder().encode(
             query,
             normalize_embeddings=True
         )
@@ -178,3 +174,21 @@ class PDFRetriever:
                 "num_chunks": len(retrieved_chunks)
             }
         }
+
+    def get_embedder(self):
+
+        if self.embedder is None:
+    
+            print("=" * 60)
+            print("LOADING SENTENCE TRANSFORMER")
+            print("=" * 60)
+    
+            from sentence_transformers import SentenceTransformer
+    
+            self.embedder = SentenceTransformer(
+                self.model_name
+            )
+    
+            print("[✓] SentenceTransformer loaded.")
+    
+        return self.embedder
