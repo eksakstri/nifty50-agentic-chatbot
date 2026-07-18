@@ -134,7 +134,9 @@ class AnswerGenerator:
 
     def generate(self, state):
 
-        source = state["retrieval_source"]
+        source = state.get("retrieval_source")
+        confidence = state.get("retrieval_confidence", 0.0)
+        context = state.get("retrieved_context")
 
         query = state["query"]
 
