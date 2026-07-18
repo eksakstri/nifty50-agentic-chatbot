@@ -1,6 +1,8 @@
 import json
 import traceback
 from pathlib import Path
+import psutil
+import os
 
 print("[PDF RETRIEVER] Importing faiss...")
 import faiss
@@ -70,7 +72,21 @@ class PDFRetriever:
             print("[4] Loading SentenceTransformer...")
             print(f"[4] Model name: {model_name}")
 
+            process = psutil.Process(os.getpid())
+            
+            print(
+                "RAM before model:",
+                process.memory_info().rss / 1024 / 1024,
+                "MB"
+            )
+
             self.embedder = SentenceTransformer(model_name)
+
+            print(
+                "RAM after model:",
+                process.memory_info().rss / 1024 / 1024,
+                "MB"
+            )
 
             print("[✓] SentenceTransformer loaded.")
 
