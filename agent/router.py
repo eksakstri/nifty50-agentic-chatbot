@@ -108,14 +108,7 @@ Format:
     "requires_llm":false,
     "reason":"Daily market performance."
 }
-
-Never return markdown.
-
-Never explain.
-
-Never answer the user.
 """
-
 
 VALID_ROUTES = {
     "market",
@@ -124,15 +117,98 @@ VALID_ROUTES = {
     "general"
 }
 
+# ---------------------------------------------------------
+# Company aliases
+# ---------------------------------------------------------
 
-# ==========================================================
-# Router
-# ==========================================================
+COMPANIES = {
+    "reliance":"RELIANCE",
+    "hdfc bank":"HDFCBANK",
+    "hdfcbank":"HDFCBANK",
+    "icici bank":"ICICIBANK",
+    "icicibank":"ICICIBANK",
+    "infosys":"INFY",
+    "infy":"INFY",
+    "tcs":"TCS",
+    "sbi":"SBIN",
+    "sbin":"SBIN",
+    "bharti":"BHARTIARTL",
+    "bharti airtel":"BHARTIARTL",
+    "l&t":"LT",
+    "lt":"LT",
+    "larsen":"LT",
+    "mahindra":"M&M",
+    "m&m":"M&M",
+    "bajaj finance":"BAJFINANCE",
+    "axis":"AXISBANK",
+    "axis bank":"AXISBANK",
+    "cipla":"CIPLA",
+    "hindalco":"HINDALCO",
+    "tata steel":"TATASTEEL",
+    "bel":"BEL",
+    "bharat electronics":"BEL",
+    "adani ports":"ADANIPORTS",
+    "bajaj auto":"BAJAJ-AUTO",
+    "maruti":"MARUTI",
+    "maruti suzuki":"MARUTI",
+    "sun pharma":"SUNPHARMA",
+    "sunpharma":"SUNPHARMA",
+    "adani enterprises":"ADANIENT",
+    "trent":"TRENT",
+    "eternal":"ETERNAL",
+    "zomato":"ETERNAL",
+    "ntpc":"NTPC",
+    "wipro":"WIPRO",
+    "kotak":"KOTAKBANK",
+    "kotak bank":"KOTAKBANK",
+    "dr reddy":"DRREDDY",
+    "dr reddy's":"DRREDDY",
+    "ultratech":"ULTRACEMCO",
+    "ultracemco":"ULTRACEMCO",
+    "hcl":"HCLTECH",
+    "hcltech":"HCLTECH",
+    "power grid":"POWERGRID",
+    "powergrid":"POWERGRID",
+    "tech mahindra":"TECHM",
+    "techm":"TECHM",
+    "asian paints":"ASIANPAINT",
+    "max health":"MAXHEALTH",
+    "maxhealth":"MAXHEALTH",
+    "indigo":"INDIGO",
+    "interglobe":"INDIGO",
+    "shriram finance":"SHRIRAMFIN",
+    "shriramfin":"SHRIRAMFIN",
+    "eicher":"EICHERMOT",
+    "eicher motors":"EICHERMOT",
+    "itc":"ITC",
+    "jsw steel":"JSWSTEEL",
+    "jsw":"JSWSTEEL",
+    "jio financial":"JIOFIN",
+    "jiofin":"JIOFIN",
+    "titan":"TITAN",
+    "nestle":"NESTLEIND",
+    "nestle india":"NESTLEIND",
+    "grasim":"GRASIM",
+    "apollo":"APOLLOHOSP",
+    "apollo hospitals":"APOLLOHOSP",
+    "hdfc life":"HDFCLIFE",
+    "ongc":"ONGC",
+    "sbi life":"SBILIFE",
+    "sbilife":"SBILIFE",
+    "bajaj finserv":"BAJAJFINSV",
+    "tata consumer":"TATACONSUM",
+    "tataconsumer":"TATACONSUM",
+    "coal india":"COALINDIA",
+    "coalindia":"COALINDIA",
+    "hindustan unilever":"HINDUNILVR",
+    "hul":"HINDUNILVR",
+    "hindunilvr":"HINDUNILVR",
+}
+
 
 class QueryRouter:
 
     def __init__(self):
-
         self.client = client
 
     # ------------------------------------------------------
@@ -141,78 +217,109 @@ class QueryRouter:
 
         q = query.lower()
 
+        company_found = any(c in q for c in COMPANIES)
+
         option_keywords = [
-            "pcr",
-            "option",
-            "strike",
-            "support",
-            "resistance",
-            "oi",
-            "open interest",
-            "call",
-            "put",
-            "ce",
-            "pe",
-            "atm",
-            "iv",
-            "implied volatility"
+            "option","option chain","pcr","oi",
+            "open interest","support","resistance",
+            "strike","call","put","ce","pe",
+            "atm","iv","implied volatility"
         ]
 
         market_keywords = [
-            "top gainer",
-            "top loser",
-            "market",
-            "nifty",
-            "perform",
-            "performance",
-            "volume",
-            "traded value",
-            "change",
-            "last price",
-            "year high",
-            "year low"
+            "market","nifty","sensex",
+            "price","stock price",
+            "top gainer","top loser",
+            "gainers","losers",
+            "performance","volume",
+            "traded value","change",
+            "52 week high","52 week low",
+            "year high","year low","ltp"
         ]
 
         pdf_keywords = [
-            "announcement",
-            "board meeting",
-            "dividend",
-            "esop",
-            "quarter",
-            "results",
+            "announcement","announce",
+            "board meeting","board",
+            "dividend","esop",
+            "quarter","quarterly",
+            "result","results",
+            "earnings",
+            "annual report",
             "report",
             "filing",
             "corporate action",
             "shareholder",
             "merger",
-            "acquisition"
+            "acquisition",
+            "agreement",
+            "investment",
+            "contract",
+            "order",
+            "approval",
+            "conference call",
+            "guidance"
         ]
+
+        # Company queries
+
+        if company_found:
+
+            if any(k in q for k in option_keywords):
+
+                return {
+                    "route":"option_chain",
+                    "confidence":1.0,
+                    "requires_llm":False,
+                    "reason":"Company option query."
+                }
+
+            if any(k in q for k in market_keywords):
+
+                return {
+                    "route":"market",
+                    "confidence":1.0,
+                    "requires_llm":False,
+                    "reason":"Company market query."
+                }
+
+            return {
+                "route":"pdf",
+                "confidence":0.99,
+                "requires_llm":True,
+                "reason":"Company specific query."
+            }
+
+        # Generic option queries
 
         if any(k in q for k in option_keywords):
 
             return {
-                "route": "option_chain",
-                "confidence": 1.0,
-                "requires_llm": False,
-                "reason": "Matched option chain keywords."
+                "route":"option_chain",
+                "confidence":1.0,
+                "requires_llm":False,
+                "reason":"Matched option keywords."
             }
+
+        # Generic market queries
 
         if any(k in q for k in market_keywords):
 
             return {
-                "route": "market",
-                "confidence": 1.0,
-                "requires_llm": False,
-                "reason": "Matched market keywords."
+                "route":"market",
+                "confidence":1.0,
+                "requires_llm":False,
+                "reason":"Matched market keywords."
             }
+
+        # Generic corporate document queries
 
         if any(k in q for k in pdf_keywords):
 
             return {
-                "route": "pdf",
-                "confidence": 1.0,
-                "requires_llm": True,
-                "reason": "Matched company document keywords."
+                "route":"pdf",
+                "confidence":1.0,
+                "requires_llm":True,
+                "reason":"Matched PDF keywords."
             }
 
         return None
@@ -228,17 +335,17 @@ class QueryRouter:
             temperature=0,
 
             response_format={
-                "type": "json_object"
+                "type":"json_object"
             },
 
             messages=[
                 {
-                    "role": "system",
-                    "content": SYSTEM_PROMPT
+                    "role":"system",
+                    "content":SYSTEM_PROMPT
                 },
                 {
-                    "role": "user",
-                    "content": query
+                    "role":"user",
+                    "content":query
                 }
             ]
         )
@@ -253,70 +360,47 @@ class QueryRouter:
         )
 
         if route not in VALID_ROUTES:
-
             route = "general"
-
-        confidence = float(
-            output.get(
-                "confidence",
-                0.5
-            )
-        )
-
-        confidence = max(
-            0.0,
-            min(
-                confidence,
-                1.0
-            )
-        )
-
-        requires_llm = bool(
-            output.get(
-                "requires_llm",
-                True
-            )
-        )
 
         return {
 
-            "route": route,
+            "route":route,
 
-            "confidence": confidence,
+            "confidence":max(
+                0.0,
+                min(float(output.get("confidence",0.5)),1.0)
+            ),
 
-            "requires_llm": requires_llm,
+            "requires_llm":bool(
+                output.get("requires_llm",True)
+            ),
 
-            "reason": output.get(
-                "reason",
-                ""
-            )
+            "reason":output.get("reason","")
         }
 
     # ------------------------------------------------------
 
     def route(self, query):
 
-        rule_result = self._rule_based_route(query)
+        result = self._rule_based_route(query)
 
-        if rule_result is not None:
-
-            return rule_result
+        if result is not None:
+            return result
 
         try:
-
             return self._llm_route(query)
 
         except Exception:
 
             return {
 
-                "route": "general",
+                "route":"general",
 
-                "confidence": 0.0,
+                "confidence":0.0,
 
-                "requires_llm": True,
+                "requires_llm":True,
 
-                "reason": "LLM router failed."
+                "reason":"LLM router failed."
             }
 
 
