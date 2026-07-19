@@ -13,4 +13,11 @@ def router_node(state: AgentState):
 
     state["requires_llm"] = result["requires_llm"]
 
+    print("=" * 60)
+    print("ROUTER")
+    print("Query:", state["query"])
+    print("Route:", state["route"])
+    print("Confidence:", state.get("router_confidence"))
+    print("=" * 60)
+
     return state
